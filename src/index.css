@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: white;
+  --color-foreground: black;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+  }
+}
+
+/* Ensure Tailwind 4 handles dark mode correctly via class */
+@variant dark (&:where(.dark, .dark *));
