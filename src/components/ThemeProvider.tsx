@@ -1,24 +1,11 @@
-import { createContext, useContext, useEffect, useState } from "react";
-
-type Theme = "dark" | "light" | "system";
+import { useEffect, useState } from "react";
+import { ThemeProviderContext, type Theme } from "../context/ThemeContext";
 
 interface ThemeProviderProps {
   children: React.ReactNode;
   defaultTheme?: Theme;
   storageKey?: string;
 }
-
-interface ThemeProviderState {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-}
-
-const initialState: ThemeProviderState = {
-  theme: "system",
-  setTheme: () => null,
-};
-
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
@@ -61,16 +48,4 @@ export function ThemeProvider({
       {children}
     </ThemeProviderContext.Provider>
   );
-}
-
-// Separate hook or export to satisfy Fast Refresh if needed, 
-// but for now let's just use the context directly or ensure this is the only export if possible.
-// Actually, for better practices and avoiding the lint error, we'll keep it simple.
-export const useTheme = () => {
-  const context = useContext(ThemeProviderContext);
-
-  if (context === undefined)
-    throw new Error("useTheme must be used within a ThemeProvider");
-
-  return context;
 }
