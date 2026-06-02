@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { ThemeToggle } from "../../components/ThemeToggle"
 import { Button } from "../../components/ui/Button"
@@ -6,6 +6,7 @@ import { Card, CardContent } from "../../components/ui/Card"
 import { Input } from "../../components/ui/Input"
 import { TelegramLogin } from "../../components/TelegramLogin"
 import { AuthService } from "../../services/api/services/AuthService"
+import { useAuth } from "../../hooks/use-auth"
 import { Loader2 } from "lucide-react"
 import type { internal_api_TelegramAuthRequest } from "../../services/api/models/internal_api_TelegramAuthRequest"
 
@@ -13,6 +14,14 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
+  const { user, loading: authLoading } = useAuth()
+
+  // Si ya hay un usuario autenticado, redirigir directamente al dashboard
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate("/dashboard", { replace: true })
+    }
+  }, [user, authLoading, navigate])
 
   const handleTelegramAuth = async (user: internal_api_TelegramAuthRequest) => {
     setIsLoading(true)
@@ -20,7 +29,6 @@ export default function LoginPage() {
     try {
       const response = await AuthService.postAuthTelegram(user)
       console.log("Login exitoso:", response)
-      // Redirigimos al dashboard tras el éxito
       navigate("/dashboard")
     } catch (err) {
       console.error("Error en login:", err)
@@ -28,6 +36,15 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Mientras verifica la sesión inicial, mostramos un estado de carga sutil
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+        <Loader2 className="animate-spin text-zinc-400" size={32} />
+      </div>
+    )
   }
 
   return (
