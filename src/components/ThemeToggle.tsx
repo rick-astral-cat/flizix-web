@@ -4,14 +4,14 @@ import { useTheme } from "../hooks/use-theme";
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
-  // Function to toggle between light and dark
+  // Toggle between light and dark themes
   const toggleTheme = () => {
     if (theme === "light") {
       setTheme("dark");
     } else if (theme === "dark") {
       setTheme("light");
     } else {
-      // If it's "system", we decide based on current system preference
+      // If "system", determine the next theme based on current preference
       const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       setTheme(isDark ? "light" : "dark");
     }

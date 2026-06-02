@@ -16,6 +16,7 @@ import { cn } from "../utils/cn";
 import { Button } from "../components/ui/Button";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { AuthService } from "../services/api/services/AuthService";
+import { logger } from "../utils/logger";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -32,12 +33,11 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
     setIsLoggingOut(true);
     try {
       await AuthService.postAuthLogout();
-      // Tras el logout exitoso en el backend, redirigimos al login
-      // Al ser la cookie HttpOnly, el navegador la limpiará basándose en la respuesta del servidor
+      // After successful logout on the backend, redirect to login page.
+      // Since the cookie is HttpOnly, the browser will clear it based on the server response.
       navigate("/", { replace: true });
     } catch (error) {
-      console.error("Error durante el cierre de sesión:", error);
-      // Opcional: mostrar un mensaje de error al usuario
+      logger.error("Logout failed:", error);
     } finally {
       setIsLoggingOut(false);
       setIsAccountDrawerOpen(false);
@@ -45,16 +45,16 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   };
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Vista General", active: true },
-    { icon: Wallet, label: "Cuentas" },
-    { icon: ArrowUpRight, label: "Ingresos" },
-    { icon: ArrowDownLeft, label: "Gastos" },
-    { icon: Settings, label: "Configuración" },
+    { icon: LayoutDashboard, label: "Overview", active: true },
+    { icon: Wallet, label: "Accounts" },
+    { icon: ArrowUpRight, label: "Income" },
+    { icon: ArrowDownLeft, label: "Expenses" },
+    { icon: Settings, label: "Settings" },
   ];
 
   return (
     <div className="flex min-h-screen bg-white dark:bg-zinc-950 transition-colors duration-300">
-      {/* Sidebar - Estilo Notion */}
+      {/* Sidebar - Notion-style */}
       <aside 
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-64 bg-zinc-50 dark:bg-zinc-900/50 border-r border-zinc-200 dark:border-zinc-800 transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
@@ -101,7 +101,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] text-zinc-600 dark:text-zinc-300 overflow-hidden">
                 {user.name?.charAt(0) || "U"}
               </div>
-              <span className="truncate">{user.name || "Usuario"}</span>
+              <span className="truncate">{user.name || "User"}</span>
             </button>
           </div>
         </div>
@@ -123,7 +123,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               </Button>
             )}
             <h2 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-              Vista General
+              Overview
             </h2>
           </div>
           
@@ -147,7 +147,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
         </div>
       </main>
 
-      {/* Account Drawer - Estilo Minimalista */}
+      {/* Account Drawer - Minimalist style */}
       {isAccountDrawerOpen && (
         <>
           <div 
@@ -156,7 +156,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
           />
           <div className="fixed inset-y-0 right-0 w-80 bg-white dark:bg-zinc-900 shadow-2xl z-[70] border-l border-zinc-200 dark:border-zinc-800 p-6 flex flex-col transition-transform duration-300">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Cuenta</h3>
+              <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Account</h3>
               <Button variant="ghost" size="icon" onClick={() => setIsAccountDrawerOpen(false)}>
                 <X size={18} />
               </Button>
@@ -173,10 +173,10 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
             <div className="space-y-6">
               <div className="space-y-3">
                 <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider px-1">
-                  Preferencias
+                  Preferences
                 </label>
                 <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
-                  <span className="text-sm text-zinc-700 dark:text-zinc-300">Apariencia</span>
+                  <span className="text-sm text-zinc-700 dark:text-zinc-300">Appearance</span>
                   <ThemeToggle />
                 </div>
               </div>
@@ -189,7 +189,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
                   disabled={isLoggingOut}
                 >
                   {isLoggingOut ? <Loader2 className="animate-spin" size={18} /> : <LogOut size={18} />}
-                  Cerrar Sesión
+                  Sign Out
                 </Button>
               </div>
             </div>
