@@ -13,12 +13,8 @@ export function useAuth() {
         const userData = await UsersService.getMe();
         console.log("Sesión verificada. Usuario:", userData);
         setUser(userData);
-      } catch (error: any) {
-        console.error("Error al verificar sesión:", {
-          status: error.status,
-          message: error.message,
-          body: error.body
-        });
+      } catch {
+        console.error("Error al verificar sesión");
         setUser(null);
       } finally {
         setLoading(false);

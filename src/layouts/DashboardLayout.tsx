@@ -7,12 +7,15 @@ import {
   Settings,
   LogOut,
   X,
-  Menu
+  Menu,
+  Loader2
 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "../utils/cn";
 import { Button } from "../components/ui/Button";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { AuthService } from "../services/api/services/AuthService";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -22,6 +25,24 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAccountDrawerOpen, setIsAccountDrawerOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await AuthService.postAuthLogout();
+      // Tras el logout exitoso en el backend, redirigimos al login
+      // Al ser la cookie HttpOnly, el navegador la limpiará basándose en la respuesta del servidor
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Error durante el cierre de sesión:", error);
+      // Opcional: mostrar un mensaje de error al usuario
+    } finally {
+      setIsLoggingOut(false);
+      setIsAccountDrawerOpen(false);
+    }
+  };
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Vista General", active: true },
@@ -60,7 +81,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               <button
                 key={item.label}
                 className={cn(
-                  "flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer",
+                  "flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer text-left",
                   item.active 
                     ? "bg-zinc-200/50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100" 
                     : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/30 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -77,7 +98,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               onClick={() => setIsAccountDrawerOpen(true)}
               className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/30 dark:hover:bg-zinc-800/50 rounded-lg transition-colors cursor-pointer"
             >
-              <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] text-zinc-600 dark:text-zinc-300">
+              <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] text-zinc-600 dark:text-zinc-300 overflow-hidden">
                 {user.name?.charAt(0) || "U"}
               </div>
               <span className="truncate">{user.name || "Usuario"}</span>
@@ -141,8 +162,8 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               </Button>
             </div>
 
-            <div className="flex flex-col items-center mb-8">
-              <div className="w-20 h-20 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-4 border border-zinc-200 dark:border-zinc-700 text-2xl">
+            <div className="flex flex-col items-center mb-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-4 border border-zinc-200 dark:border-zinc-700 text-2xl overflow-hidden">
                 {user.name?.charAt(0) || "U"}
               </div>
               <p className="font-medium text-zinc-900 dark:text-zinc-100">{user.name}</p>
@@ -161,8 +182,13 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               </div>
 
               <div className="pt-6 border-t border-zinc-100 dark:border-zinc-800">
-                <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 gap-3">
-                  <LogOut size={18} />
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 gap-3"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                >
+                  {isLoggingOut ? <Loader2 className="animate-spin" size={18} /> : <LogOut size={18} />}
                   Cerrar Sesión
                 </Button>
               </div>
