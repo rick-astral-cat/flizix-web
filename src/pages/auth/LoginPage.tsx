@@ -8,6 +8,7 @@ import { TelegramLogin } from "../../components/TelegramLogin"
 import { AuthService } from "../../services/api/services/AuthService"
 import { useAuth } from "../../hooks/use-auth"
 import { Loader2 } from "lucide-react"
+import { logger } from "../../utils/logger"
 import type { internal_api_TelegramAuthRequest } from "../../services/api/models/internal_api_TelegramAuthRequest"
 
 export default function LoginPage() {
@@ -16,7 +17,7 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const { user, loading: authLoading } = useAuth()
 
-  // Si ya hay un usuario autenticado, redirigir directamente al dashboard
+  // Redirect to dashboard if user is already authenticated
   useEffect(() => {
     if (!authLoading && user) {
       navigate("/dashboard", { replace: true })
@@ -28,17 +29,18 @@ export default function LoginPage() {
     setError(null)
     try {
       const response = await AuthService.postAuthTelegram(user)
-      console.log("Login exitoso:", response)
+      logger.info("Login successful:", response)
+      // Redirect to dashboard after successful login
       navigate("/dashboard")
     } catch (err) {
-      console.error("Error en login:", err)
-      setError("No se pudo iniciar sesión con Telegram. Intenta de nuevo.")
+      logger.error("Login failed:", err)
+      setError("Could not sign in with Telegram. Please try again.")
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Mientras verifica la sesión inicial, mostramos un estado de carga sutil
+  // Show a subtle loading state while checking the initial session
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
@@ -60,14 +62,14 @@ export default function LoginPage() {
               Flizix
             </h1>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center">
-              Tu aplicación de finanzas personales
+              Your personal finance application
             </p>
           </div>
           
           <div className="space-y-4">
-            <Input label="Email" placeholder="tu@ejemplo.com" type="email" disabled={isLoading} />
+            <Input label="Email" placeholder="you@example.com" type="email" disabled={isLoading} />
             <Button className="w-full" variant="primary" disabled={isLoading}>
-              Continuar con Email
+              Continue with Email
             </Button>
           </div>
 
@@ -76,7 +78,7 @@ export default function LoginPage() {
               <span className="w-full border-t border-zinc-200 dark:border-zinc-800" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white dark:bg-zinc-900 px-2 text-zinc-500">O utiliza</span>
+              <span className="bg-white dark:bg-zinc-900 px-2 text-zinc-500">Or use</span>
             </div>
           </div>
 
@@ -84,7 +86,7 @@ export default function LoginPage() {
             {isLoading ? (
               <div className="flex items-center gap-2 text-sm text-zinc-500">
                 <Loader2 className="animate-spin" size={16} />
-                Verificando...
+                Verifying...
               </div>
             ) : (
               <TelegramLogin 

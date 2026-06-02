@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { UsersService } from "../services/api/services/UsersService";
 import type { internal_api_UserResponse } from "../services/api/models/internal_api_UserResponse";
+import { logger } from "../utils/logger";
 
+/**
+ * Hook to manage and provide the current user's authentication state.
+ */
 export function useAuth() {
   const [user, setUser] = useState<internal_api_UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -9,12 +13,12 @@ export function useAuth() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        console.log("Iniciando verificación de sesión en /me...");
+        logger.info("Starting session verification at /me...");
         const userData = await UsersService.getMe();
-        console.log("Sesión verificada. Usuario:", userData);
+        logger.info("Session verified. User:", userData);
         setUser(userData);
       } catch {
-        console.error("Error al verificar sesión");
+        logger.error("Failed to verify session");
         setUser(null);
       } finally {
         setLoading(false);
