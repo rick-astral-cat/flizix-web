@@ -17,6 +17,7 @@ import { Button } from "../components/ui/Button";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { AuthService } from "../services/api/services/AuthService";
 import { logger } from "../utils/logger";
+import { SidebarGraphAnimation } from "../components/SidebarGraphAnimation";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -94,16 +95,19 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
             ))}
           </nav>
 
-          <div className="mt-auto pt-4 border-t border-zinc-200 dark:border-zinc-800">
-            <button
-              onClick={() => setIsAccountDrawerOpen(true)}
-              className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/30 dark:hover:bg-zinc-800/50 rounded-lg transition-colors cursor-pointer"
-            >
-              <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] text-zinc-600 dark:text-zinc-300 overflow-hidden">
-                {user.name?.charAt(0) || "U"}
-              </div>
-              <span className="truncate">{user.name || "User"}</span>
-            </button>
+          <div className="mt-auto space-y-4">
+            <SidebarGraphAnimation />
+            <div className="pt-4 border-t border-zinc-200 dark:border-white/[0.08]">
+              <button
+                onClick={() => setIsAccountDrawerOpen(true)}
+                className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/30 dark:hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
+              >
+                <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-600 dark:text-zinc-300 overflow-hidden">
+                  {user.name?.charAt(0) || "U"}
+                </div>
+                <span className="truncate">{user.name || "User"}</span>
+              </button>
+            </div>
           </div>
         </div>
       </aside>
