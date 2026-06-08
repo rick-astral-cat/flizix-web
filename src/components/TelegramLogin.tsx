@@ -51,7 +51,7 @@ export function TelegramLogin({
 
     // 3. Add script to the container
     if (containerRef.current) {
-      containerRef.current.innerHTML = ""; // Clean up before adding
+      containerRef.current.innerHTML = "";
       containerRef.current.appendChild(script);
     }
 
