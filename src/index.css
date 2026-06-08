@@ -3,19 +3,93 @@
 @theme {
   --color-background: white;
   --color-foreground: black;
+
+  /* Fintech Premium Palette */
+  --color-fintech-primary: rgba(56, 189, 248, 0.15);
+  --color-fintech-secondary: rgba(139, 92, 246, 0.12);
+  --color-fintech-accent: rgba(217, 70, 239, 0.1);
+  --color-fintech-bg: #080a10;
 }
 
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
+    
+    /* Fintech Light: Colores más "frescos" y con un toque más de saturación para que se vean sobre blanco */
+    --fintech-primary: rgba(14, 165, 233, 0.12);   /* Sky 500 */
+    --fintech-secondary: rgba(139, 92, 246, 0.1);  /* Violet 500 */
+    --fintech-accent: rgba(236, 72, 153, 0.07);    /* Pink 500 */
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    --color-background: var(--color-fintech-bg);
+    --color-foreground: 0 0% 98%;
+    background-color: var(--color-fintech-bg);
+
+    /* Fintech Dark: Tus colores originales técnicos */
+    --fintech-primary: rgba(56, 189, 248, 0.15);
+    --fintech-secondary: rgba(139, 92, 246, 0.12);
+    --fintech-accent: rgba(217, 70, 239, 0.1);
+  }
+
+  body {
+    @apply transition-colors duration-300;
   }
 }
 
 /* Ensure Tailwind 4 handles dark mode correctly via class */
 @variant dark (&:where(.dark, .dark *));
+
+@layer utilities {
+  .fintech-stage {
+    @apply relative w-screen h-screen flex items-center justify-center overflow-hidden;
+  }
+
+  .animated-background {
+    @apply absolute inset-0 overflow-hidden -z-10;
+  }
+
+  .animated-background::before,
+  .animated-background::after {
+    content: '';
+    @apply absolute w-[200%] h-[200%] -top-1/2 -left-1/2 opacity-80 blur-[100px];
+  }
+
+  .animated-background::before {
+    background-image: linear-gradient(125deg, 
+      transparent 0%, 
+      transparent 40%, 
+      var(--fintech-primary) 50%, 
+      transparent 60%, 
+      transparent 100%
+    );
+    animation: flowDiagonal 25s linear infinite;
+  }
+
+  .animated-background::after {
+    background-image: linear-gradient(125deg, 
+      transparent 0%, 
+      var(--fintech-secondary) 25%, 
+      transparent 50%, 
+      var(--fintech-accent) 75%, 
+      transparent 100%
+    );
+    animation: flowDiagonal 10s linear infinite reverse;
+    @apply opacity-50;
+  }
+
+  .glass-card {
+    @apply bg-white/40 dark:bg-white/3 backdrop-blur-[20px] border border-zinc-200/50 dark:border-white/8 shadow-[0_30px_60px_rgba(0,0,0,0.1)] dark:shadow-[0_30px_60px_rgba(0,0,0,0.5)];
+  }
+}
+
+@keyframes flowDiagonal {
+  0% {
+    transform: translate(-15%, 15%) rotate(0deg);
+  }
+  100% {
+    transform: translate(15%, -15%) rotate(5deg);
+  }
+}
+

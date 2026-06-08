@@ -10,7 +10,7 @@ export function Card({ children, className }: CardProps) {
   return (
     <div
       className={cn(
-        "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm",
+        "bg-white dark:bg-white/[0.02] border border-zinc-200 dark:border-white/[0.08] rounded-xl overflow-hidden shadow-sm dark:shadow-2xl dark:backdrop-blur-md",
         className
       )}
     >

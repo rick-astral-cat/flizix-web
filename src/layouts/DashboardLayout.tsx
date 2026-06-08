@@ -53,14 +53,15 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   ];
 
   return (
-    <div className="flex min-h-screen bg-white dark:bg-zinc-950 transition-colors duration-300">
-      {/* Sidebar - Notion-style */}
-      <aside 
+    <div className="flex min-h-screen bg-zinc-50 dark:bg-background transition-colors duration-300">
+      {/* Sidebar - Desktop */}
+      <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-zinc-50 dark:bg-zinc-900/50 border-r border-zinc-200 dark:border-zinc-800 transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
-          !isSidebarOpen && "-translate-x-full md:w-0 md:opacity-0"
+          "fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-white/[0.02] border-r border-zinc-200 dark:border-white/[0.08] transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
+          !isSidebarOpen && "-translate-x-full"
         )}
       >
+
         <div className="flex flex-col h-full p-4">
           <div className="flex items-center justify-between mb-8 px-2">
             <span className="font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
@@ -110,7 +111,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <header className="h-14 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between px-4 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40">
+        <header className="h-14 border-b border-zinc-200 dark:border-white/[0.08] flex items-center justify-between px-4 bg-white/80 dark:bg-background/80 backdrop-blur-md sticky top-0 z-40">
           <div className="flex items-center gap-4">
             {!isSidebarOpen && (
               <Button 
@@ -154,7 +155,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
             className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-[2px] z-[60]" 
             onClick={() => setIsAccountDrawerOpen(false)}
           />
-          <div className="fixed inset-y-0 right-0 w-80 bg-white dark:bg-zinc-900 shadow-2xl z-[70] border-l border-zinc-200 dark:border-zinc-800 p-6 flex flex-col transition-transform duration-300">
+          <div className="fixed inset-y-0 right-0 w-80 bg-white dark:bg-background shadow-2xl z-[70] border-l border-zinc-200 dark:border-white/[0.08] p-6 flex flex-col transition-transform duration-300">
             <div className="flex items-center justify-between mb-8">
               <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Account</h3>
               <Button variant="ghost" size="icon" onClick={() => setIsAccountDrawerOpen(false)}>

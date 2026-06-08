@@ -9,7 +9,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-zinc-950">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-background">
         <Loader2 className="animate-spin text-zinc-400" size={32} />
       </div>
     );
@@ -17,7 +17,7 @@ export default function DashboardPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-zinc-950 p-4 text-center">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-background p-4 text-center">
         <h1 className="text-xl font-semibold mb-2">Unauthorized</h1>
         <p className="text-zinc-500 mb-6">You must sign in to view this page.</p>
         <a href="/" className="text-blue-600 hover:underline text-sm font-medium">Back to Home</a>
