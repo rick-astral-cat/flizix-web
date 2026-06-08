@@ -50,41 +50,53 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-4 transition-colors duration-300">
+    <div className="fintech-stage transition-colors duration-300">
+      <div className="animated-background" />
+      
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
       
-      <Card className="max-w-sm w-full">
+      <Card className="max-w-sm w-full glass-card border-none">
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight text-center">
+            <h1 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight text-center">
               Flizix
             </h1>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center">
+            <p className="text-sm text-zinc-500 dark:text-white/60 text-center">
               Your personal finance application
             </p>
           </div>
           
           <div className="space-y-4">
-            <Input label="Email" placeholder="you@example.com" type="email" disabled={isLoading} />
-            <Button className="w-full" variant="primary" disabled={isLoading}>
+            <Input 
+              label="Email" 
+              placeholder="you@example.com" 
+              type="email" 
+              disabled={isLoading} 
+              className="dark:bg-white/5 dark:border-white/10 dark:text-white"
+            />
+            <Button 
+              className="w-full dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200" 
+              variant="primary" 
+              disabled={isLoading}
+            >
               Continue with Email
             </Button>
           </div>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+              <span className="w-full border-t border-zinc-200 dark:border-white/10" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white dark:bg-zinc-900 px-2 text-zinc-500">Or use</span>
+              <span className="bg-white dark:bg-[#12141c] px-2 text-zinc-500 dark:text-white/40 rounded-full">Or use</span>
             </div>
           </div>
 
           <div className="flex flex-col items-center space-y-4">
             {isLoading ? (
-              <div className="flex items-center gap-2 text-sm text-zinc-500">
+              <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-white/60">
                 <Loader2 className="animate-spin" size={16} />
                 Verifying...
               </div>
@@ -106,7 +118,7 @@ export default function LoginPage() {
         </CardContent>
       </Card>
       
-      <p className="mt-8 text-xs text-zinc-400 dark:text-zinc-600">
+      <p className="absolute bottom-8 text-xs text-zinc-400 dark:text-white/40">
         Flizix Personal Finance • 2026
       </p>
     </div>
