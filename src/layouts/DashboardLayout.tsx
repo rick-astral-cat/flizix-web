@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { 
   LayoutDashboard, 
   Wallet, 
+  CreditCard,
   ArrowUpRight, 
   ArrowDownLeft, 
   Settings,
@@ -48,6 +49,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   const menuItems = [
     { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
     { icon: Wallet, label: "Accounts", path: "/accounts" },
+    { icon: CreditCard, label: "Cards", path: "/cards" },
     { icon: ArrowUpRight, label: "Income", path: "/income" },
     { icon: ArrowDownLeft, label: "Expenses", path: "/expenses" },
     { icon: Settings, label: "Settings", path: "/settings" },
