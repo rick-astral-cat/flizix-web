@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { UsersService } from "../services/api/services/UsersService";
-import type { internal_api_UserResponse } from "../services/api/models/internal_api_UserResponse";
+import type { api_UserResponse } from "../services/api/models/api_UserResponse";
 import { logger } from "../utils/logger";
 
 /**
  * Hook to manage and provide the current user's authentication state.
  */
 export function useAuth() {
-  const [user, setUser] = useState<internal_api_UserResponse | null>(null);
+  const [user, setUser] = useState<api_UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

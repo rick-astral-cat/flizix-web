@@ -9,7 +9,7 @@ import { AuthService } from "../../services/api/services/AuthService"
 import { useAuth } from "../../hooks/use-auth"
 import { Loader2 } from "lucide-react"
 import { logger } from "../../utils/logger"
-import type { internal_api_TelegramAuthRequest } from "../../services/api/models/internal_api_TelegramAuthRequest"
+import type { api_TelegramAuthRequest } from "../../services/api/models/api_TelegramAuthRequest"
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -24,7 +24,7 @@ export default function LoginPage() {
     }
   }, [user, authLoading, navigate])
 
-  const handleTelegramAuth = async (user: internal_api_TelegramAuthRequest) => {
+  const handleTelegramAuth = async (user: api_TelegramAuthRequest) => {
     setIsLoading(true)
     setError(null)
     try {
