@@ -46,12 +46,15 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   };
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Overview", active: true },
-    { icon: Wallet, label: "Accounts" },
-    { icon: ArrowUpRight, label: "Income" },
-    { icon: ArrowDownLeft, label: "Expenses" },
-    { icon: Settings, label: "Settings" },
+    { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
+    { icon: Wallet, label: "Accounts", path: "/accounts" },
+    { icon: ArrowUpRight, label: "Income", path: "/income" },
+    { icon: ArrowDownLeft, label: "Expenses", path: "/expenses" },
+    { icon: Settings, label: "Settings", path: "/settings" },
   ];
+
+  const currentPath = window.location.pathname;
+  const activeItem = menuItems.find(item => item.path === currentPath) || menuItems[0];
 
   return (
     <div className="flex min-h-screen bg-zinc-50 dark:bg-background transition-colors duration-300">
@@ -65,7 +68,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
 
         <div className="flex flex-col h-full p-4">
           <div className="flex items-center justify-between mb-8 px-2">
-            <span className="font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
+            <span className="font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight cursor-pointer" onClick={() => navigate("/dashboard")}>
               Flizix
             </span>
             <Button 
@@ -79,20 +82,24 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
           </div>
 
           <nav className="flex-1 space-y-1">
-            {menuItems.map((item) => (
-              <button
-                key={item.label}
-                className={cn(
-                  "flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer text-left",
-                  item.active 
-                    ? "bg-zinc-200/50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100" 
-                    : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/30 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-100"
-                )}
-              >
-                <item.icon size={18} />
-                {item.label}
-              </button>
-            ))}
+            {menuItems.map((item) => {
+              const isActive = currentPath === item.path;
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => navigate(item.path)}
+                  className={cn(
+                    "flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer text-left",
+                    isActive 
+                      ? "bg-zinc-200/50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100" 
+                      : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/30 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  )}
+                >
+                  <item.icon size={18} />
+                  {item.label}
+                </button>
+              );
+            })}
           </nav>
 
           <div className="mt-auto space-y-4">
@@ -128,7 +135,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               </Button>
             )}
             <h2 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-              Overview
+              {activeItem.label}
             </h2>
           </div>
           
