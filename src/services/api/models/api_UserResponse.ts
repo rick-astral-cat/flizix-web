@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type internal_api_UserResponse = {
+export type api_UserResponse = {
     email?: string;
     id?: number;
     name?: string;
