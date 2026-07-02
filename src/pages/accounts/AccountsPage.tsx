@@ -5,7 +5,7 @@ import { AccountsService, type api_AccountResponse } from "../../services/api";
 import { Card, CardContent } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
-import { Loader2, Landmark, Coins, Plus, X } from "lucide-react";
+import { Loader2, Landmark, Coins, Plus, X, Trash2, AlertTriangle } from "lucide-react";
 import { logger } from "../../utils/logger";
 
 export default function AccountsPage() {
@@ -14,12 +14,17 @@ export default function AccountsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Modal and Form States
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Creation Modal States
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [name, setName] = useState("");
   const [type, setType] = useState<number>(1); // Default to 1 (Checking)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Deletion States
+  const [accountToDelete, setAccountToDelete] = useState<api_AccountResponse | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const fetchAccounts = async () => {
     try {
@@ -41,16 +46,16 @@ export default function AccountsPage() {
     }
   }, [user]);
 
-  const handleOpenModal = () => {
+  const handleOpenCreateModal = () => {
     setName("");
     setType(1);
     setSubmitError(null);
-    setIsModalOpen(true);
+    setIsCreateModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseCreateModal = () => {
     if (!isSubmitting) {
-      setIsModalOpen(false);
+      setIsCreateModalOpen(false);
     }
   };
 
@@ -65,13 +70,41 @@ export default function AccountsPage() {
         name: name.trim(),
         type: type,
       });
-      setIsModalOpen(false);
+      setIsCreateModalOpen(false);
       fetchAccounts();
     } catch (err) {
       logger.error("Failed to create account:", err);
       setSubmitError("Failed to create account. Please check your inputs and try again.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleOpenDeleteModal = (account: api_AccountResponse) => {
+    setAccountToDelete(account);
+    setDeleteError(null);
+  };
+
+  const handleCloseDeleteModal = () => {
+    if (!isDeleting) {
+      setAccountToDelete(null);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!accountToDelete || accountToDelete.id === undefined) return;
+
+    try {
+      setIsDeleting(true);
+      setDeleteError(null);
+      await AccountsService.deleteAccounts(accountToDelete.id);
+      setAccountToDelete(null);
+      fetchAccounts();
+    } catch (err) {
+      logger.error("Failed to delete account:", err);
+      setDeleteError("Failed to delete account. Please try again.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -106,7 +139,7 @@ export default function AccountsPage() {
             </p>
           </div>
           <Button 
-            onClick={handleOpenModal}
+            onClick={handleOpenCreateModal}
             className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer"
           >
             <Plus size={16} />
@@ -134,7 +167,7 @@ export default function AccountsPage() {
               <p className="text-zinc-500 dark:text-zinc-400 text-sm max-w-sm mb-6">
                 Create a bank or cash account to start tracking your balances and transactions.
               </p>
-              <Button onClick={handleOpenModal} variant="outline" className="flex items-center gap-2 cursor-pointer">
+              <Button onClick={handleOpenCreateModal} variant="outline" className="flex items-center gap-2 cursor-pointer">
                 <Plus size={16} />
                 Create Account
               </Button>
@@ -149,7 +182,7 @@ export default function AccountsPage() {
               const typeLabel = typeId === 1 ? "Checking" : typeId === 2 ? "Cash" : "Other";
               
               return (
-                <Card key={account.id} className="group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all">
+                <Card key={account.id} className="group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all relative">
                   <CardContent className="p-5 flex items-start justify-between gap-4">
                     <div className="flex gap-4">
                       <div className="p-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
@@ -164,6 +197,15 @@ export default function AccountsPage() {
                         </span>
                       </div>
                     </div>
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleOpenDeleteModal(account)}
+                      className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer absolute top-3 right-3 h-8 w-8"
+                    >
+                      <Trash2 size={15} />
+                    </Button>
                   </CardContent>
                 </Card>
               );
@@ -173,11 +215,11 @@ export default function AccountsPage() {
       </div>
 
       {/* Modal - Create Account */}
-      {isModalOpen && (
+      {isCreateModalOpen && (
         <>
           <div 
             className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] z-[80] transition-opacity" 
-            onClick={handleCloseModal}
+            onClick={handleCloseCreateModal}
           />
           <div className="fixed inset-0 flex items-center justify-center p-4 z-[90] pointer-events-none">
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/[0.08] w-full max-w-md rounded-xl shadow-2xl p-6 pointer-events-auto transition-transform scale-100 flex flex-col gap-5">
@@ -188,7 +230,7 @@ export default function AccountsPage() {
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  onClick={handleCloseModal}
+                  onClick={handleCloseCreateModal}
                   disabled={isSubmitting}
                   className="cursor-pointer"
                 >
@@ -250,7 +292,7 @@ export default function AccountsPage() {
                   <Button 
                     type="button"
                     variant="ghost" 
-                    onClick={handleCloseModal}
+                    onClick={handleCloseCreateModal}
                     disabled={isSubmitting}
                     className="cursor-pointer"
                   >
@@ -272,6 +314,64 @@ export default function AccountsPage() {
                   </Button>
                 </div>
               </form>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Modal - Confirm Delete */}
+      {accountToDelete && (
+        <>
+          <div 
+            className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] z-[80] transition-opacity" 
+            onClick={handleCloseDeleteModal}
+          />
+          <div className="fixed inset-0 flex items-center justify-center p-4 z-[90] pointer-events-none">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/[0.08] w-full max-w-sm rounded-xl shadow-2xl p-6 pointer-events-auto transition-transform scale-100 flex flex-col gap-4">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-full bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 shrink-0">
+                  <AlertTriangle size={20} />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-base">
+                    Delete Account
+                  </h3>
+                  <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+                    Are you sure you want to delete the account <strong>"{accountToDelete.name}"</strong>? This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+
+              {deleteError && (
+                <div className="p-3 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 rounded-lg text-xs font-medium">
+                  {deleteError}
+                </div>
+              )}
+
+              <div className="flex gap-3 justify-end pt-2">
+                <Button 
+                  variant="ghost" 
+                  onClick={handleCloseDeleteModal}
+                  disabled={isDeleting}
+                  className="cursor-pointer text-xs"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="bg-red-600 hover:bg-red-700 dark:bg-red-650 dark:hover:bg-red-700 text-white border-none flex items-center justify-center gap-2 min-w-[80px] cursor-pointer text-xs"
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="animate-spin" size={14} />
+                      Deleting...
+                    </>
+                  ) : (
+                    "Delete"
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </>
