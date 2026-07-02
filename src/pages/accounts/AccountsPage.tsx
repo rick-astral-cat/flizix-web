@@ -4,7 +4,8 @@ import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { AccountsService, type api_AccountResponse } from "../../services/api";
 import { Card, CardContent } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
-import { Loader2, Landmark, Coins, Plus, Trash2 } from "lucide-react";
+import { Input } from "../../components/ui/Input";
+import { Loader2, Landmark, Coins, Plus, X } from "lucide-react";
 import { logger } from "../../utils/logger";
 
 export default function AccountsPage() {
@@ -12,6 +13,13 @@ export default function AccountsPage() {
   const [accounts, setAccounts] = useState<api_AccountResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Modal and Form States
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [type, setType] = useState<number>(1); // Default to 1 (Checking)
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const fetchAccounts = async () => {
     try {
@@ -32,6 +40,40 @@ export default function AccountsPage() {
       fetchAccounts();
     }
   }, [user]);
+
+  const handleOpenModal = () => {
+    setName("");
+    setType(1);
+    setSubmitError(null);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    if (!isSubmitting) {
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+
+    try {
+      setIsSubmitting(true);
+      setSubmitError(null);
+      await AccountsService.postAccounts({
+        name: name.trim(),
+        type: type,
+      });
+      setIsModalOpen(false);
+      fetchAccounts();
+    } catch (err) {
+      logger.error("Failed to create account:", err);
+      setSubmitError("Failed to create account. Please check your inputs and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (authLoading) {
     return (
@@ -63,7 +105,10 @@ export default function AccountsPage() {
               Manage your cash and bank accounts here.
             </p>
           </div>
-          <Button className="w-full sm:w-auto flex items-center justify-center gap-2">
+          <Button 
+            onClick={handleOpenModal}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer"
+          >
             <Plus size={16} />
             New Account
           </Button>
@@ -89,7 +134,7 @@ export default function AccountsPage() {
               <p className="text-zinc-500 dark:text-zinc-400 text-sm max-w-sm mb-6">
                 Create a bank or cash account to start tracking your balances and transactions.
               </p>
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button onClick={handleOpenModal} variant="outline" className="flex items-center gap-2 cursor-pointer">
                 <Plus size={16} />
                 Create Account
               </Button>
@@ -98,7 +143,6 @@ export default function AccountsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {accounts.map((account) => {
-              // Convert to number safely since the backend returns it as int64 ID
               const typeId = Number(account.type);
               const isBank = typeId === 1;
               const Icon = isBank ? Landmark : Coins;
@@ -127,6 +171,111 @@ export default function AccountsPage() {
           </div>
         )}
       </div>
+
+      {/* Modal - Create Account */}
+      {isModalOpen && (
+        <>
+          <div 
+            className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] z-[80] transition-opacity" 
+            onClick={handleCloseModal}
+          />
+          <div className="fixed inset-0 flex items-center justify-center p-4 z-[90] pointer-events-none">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/[0.08] w-full max-w-md rounded-xl shadow-2xl p-6 pointer-events-auto transition-transform scale-100 flex flex-col gap-5">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-lg">
+                  Create New Account
+                </h3>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleCloseModal}
+                  disabled={isSubmitting}
+                  className="cursor-pointer"
+                >
+                  <X size={18} />
+                </Button>
+              </div>
+
+              {submitError && (
+                <div className="p-3 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 rounded-lg text-xs font-medium">
+                  {submitError}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <Input
+                  label="Account Name"
+                  placeholder="e.g. BBVA Debit, Main Wallet"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  disabled={isSubmitting}
+                  required
+                />
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 ml-1">
+                    Account Type
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setType(1)}
+                      disabled={isSubmitting}
+                      className={`flex items-center justify-center gap-2 p-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
+                        type === 1
+                          ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold"
+                          : "border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                      }`}
+                    >
+                      <Landmark size={16} />
+                      Checking
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setType(2)}
+                      disabled={isSubmitting}
+                      className={`flex items-center justify-center gap-2 p-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
+                        type === 2
+                          ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold"
+                          : "border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                      }`}
+                    >
+                      <Coins size={16} />
+                      Cash
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 justify-end pt-2">
+                  <Button 
+                    type="button"
+                    variant="ghost" 
+                    onClick={handleCloseModal}
+                    disabled={isSubmitting}
+                    className="cursor-pointer"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting || !name.trim()}
+                    className="flex items-center justify-center gap-2 min-w-[100px] cursor-pointer"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="animate-spin" size={16} />
+                        Saving...
+                      </>
+                    ) : (
+                      "Create"
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </>
+      )}
     </DashboardLayout>
   );
 }
