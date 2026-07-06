@@ -11,7 +11,7 @@ import {
   Menu,
   Loader2
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "../utils/cn";
 import { Button } from "../components/ui/Button";
@@ -26,10 +26,24 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children, user }: DashboardLayoutProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isAccountDrawerOpen, setIsAccountDrawerOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -60,24 +74,38 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
 
   return (
     <div className="flex min-h-screen bg-zinc-50 dark:bg-background transition-colors duration-300">
-      {/* Sidebar - Desktop */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/20 dark:bg-black/80 backdrop-blur-[2px] z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-white/[0.02] border-r border-zinc-200 dark:border-white/[0.08] transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
-          !isSidebarOpen && "-translate-x-full"
-        )}
+          className={cn(
+            "fixed inset-y-0 left-0 z-50 w-64 bg-white/80 backdrop-blur-md dark:bg-white/[0.02] border-r border-zinc-200 dark:border-white/[0.08] transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
+            !isSidebarOpen && "-translate-x-full"
+          )}
       >
 
         <div className="flex flex-col h-full p-4">
-          <div className="flex items-center justify-between mb-8 px-2">
-            <span className="font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight cursor-pointer" onClick={() => navigate("/dashboard")}>
+          <div className="relative flex items-center justify-center min-h-[40px] mb-8 px-2">
+            <span 
+              className="font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight cursor-pointer" 
+              onClick={() => {
+                navigate("/dashboard");
+                if (window.innerWidth < 768) {
+                  setIsSidebarOpen(false);
+                }
+              }}
+            >
               Flizix
             </span>
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={() => setIsSidebarOpen(false)}
-              className="md:hidden"
+              className="absolute right-2 md:hidden"
             >
               <X size={18} />
             </Button>
@@ -89,12 +117,17 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               return (
                 <button
                   key={item.label}
-                  onClick={() => navigate(item.path)}
+                  onClick={() => {
+                    navigate(item.path);
+                    if (window.innerWidth < 768) {
+                      setIsSidebarOpen(false);
+                    }
+                  }}
                   className={cn(
                     "flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer text-left",
                     isActive 
                       ? "bg-zinc-200/50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100" 
-                      : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/30 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-100"
+                       : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/80 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-100"
                   )}
                 >
                   <item.icon size={18} />
@@ -108,7 +141,12 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
             <SidebarGraphAnimation />
             <div className="pt-4 border-t border-zinc-200 dark:border-white/[0.08]">
               <button
-                onClick={() => setIsAccountDrawerOpen(true)}
+                onClick={() => {
+                  setIsAccountDrawerOpen(true);
+                  if (window.innerWidth < 768) {
+                    setIsSidebarOpen(false);
+                  }
+                }}
                 className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/30 dark:hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
               >
                 <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-600 dark:text-zinc-300 overflow-hidden">
@@ -131,7 +169,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
                 variant="ghost" 
                 size="icon" 
                 onClick={() => setIsSidebarOpen(true)}
-                className="text-zinc-500"
+                className="text-zinc-500 md:hidden"
               >
                 <Menu size={18} />
               </Button>
@@ -161,7 +199,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
         </div>
       </main>
 
-      {/* Account Drawer - Minimalist style */}
+      {/* Account Drawer */}
       {isAccountDrawerOpen && (
         <>
           <div 
