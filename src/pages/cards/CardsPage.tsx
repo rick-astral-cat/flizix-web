@@ -163,7 +163,7 @@ export default function CardsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {cards.map((card) => {
               const isCredit = card.type?.toLowerCase() === "credit";
               const linkedAccount = accounts.find(a => a.id === card.account_id);
