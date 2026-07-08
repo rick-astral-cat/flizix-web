@@ -206,7 +206,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
             className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-[2px] z-[60]" 
             onClick={() => setIsAccountDrawerOpen(false)}
           />
-          <div className="fixed inset-y-0 right-0 w-80 bg-white dark:bg-background shadow-2xl z-[70] border-l border-zinc-200 dark:border-white/[0.08] p-6 flex flex-col transition-transform duration-300">
+          <div className="fixed inset-y-0 right-0 w-80 bg-white/80 dark:bg-background/80 backdrop-blur-[2px] shadow-2xl z-[70] border-l border-zinc-200 dark:border-white/[0.08] p-6 flex flex-col transition-transform duration-300 ease-in-out translate-x-0">
             <div className="flex items-center justify-between mb-8">
               <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">Account</h3>
               <Button variant="ghost" size="icon" onClick={() => setIsAccountDrawerOpen(false)}>
