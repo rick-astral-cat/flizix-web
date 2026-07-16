@@ -1,8 +1,8 @@
-import { useAuth } from "../../hooks/use-auth";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { Card, CardContent } from "../../components/ui/Card";
-import { Loader2, TrendingUp, TrendingDown, PiggyBank } from "lucide-react";
-import { cn } from "../../utils/cn";
+import { useAuth } from '../../hooks/use-auth';
+import { DashboardLayout } from '../../layouts/DashboardLayout';
+import { Card, CardContent } from '../../components/ui/Card';
+import { Loader2, TrendingUp, TrendingDown, PiggyBank } from 'lucide-react';
+import { cn } from '../../utils/cn';
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
@@ -20,15 +20,17 @@ export default function DashboardPage() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-background p-4 text-center">
         <h1 className="text-xl font-semibold mb-2">Unauthorized</h1>
         <p className="text-zinc-500 mb-6">You must sign in to view this page.</p>
-        <a href="/" className="text-blue-600 hover:underline text-sm font-medium">Back to Home</a>
+        <a href="/" className="text-blue-600 hover:underline text-sm font-medium">
+          Back to Home
+        </a>
       </div>
     );
   }
 
   const stats = [
-    { label: "Total Balance", value: "$12,450.00", icon: PiggyBank, color: "text-blue-600" },
-    { label: "Income (Month)", value: "+$3,200.00", icon: TrendingUp, color: "text-green-600" },
-    { label: "Expenses (Month)", value: "-$1,850.00", icon: TrendingDown, color: "text-red-600" },
+    { label: 'Total Balance', value: '$12,450.00', icon: PiggyBank, color: 'text-blue-600' },
+    { label: 'Income (Month)', value: '+$3,200.00', icon: TrendingUp, color: 'text-green-600' },
+    { label: 'Expenses (Month)', value: '-$1,850.00', icon: TrendingDown, color: 'text-red-600' },
   ];
 
   return (
@@ -47,7 +49,7 @@ export default function DashboardPage() {
           {stats.map((stat) => (
             <Card key={stat.label}>
               <CardContent className="p-4 flex items-center gap-4">
-                <div className={cn("p-2 rounded-lg bg-zinc-50 dark:bg-zinc-800", stat.color)}>
+                <div className={cn('p-2 rounded-lg bg-zinc-50 dark:bg-zinc-800', stat.color)}>
                   <stat.icon size={20} />
                 </div>
                 <div>
@@ -66,12 +68,17 @@ export default function DashboardPage() {
         {/* Recent Activity Placeholder */}
         <Card>
           <div className="p-4 border-b border-zinc-100 dark:border-zinc-800">
-            <h3 className="font-medium text-zinc-900 dark:text-zinc-100 text-sm">Recent Activity</h3>
+            <h3 className="font-medium text-zinc-900 dark:text-zinc-100 text-sm">
+              Recent Activity
+            </h3>
           </div>
           <CardContent className="p-0">
             <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="p-4 flex items-center justify-between hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+                <div
+                  key={i}
+                  className="p-4 flex items-center justify-between hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors"
+                >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800" />
                     <div className="space-y-1">

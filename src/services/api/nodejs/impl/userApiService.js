@@ -1,6 +1,5 @@
 'use strict';
 
-
 /**
  * Create user
  * This can only be done by the logged in user.
@@ -8,103 +7,97 @@
  * user User This can only be done by the logged in user.
  * no response value expected for this operation
  **/
-exports.createUser = function(user) {
-  return new Promise(function(resolve, reject) {
+exports.createUser = function (user) {
+  return new Promise(function (resolve, reject) {
     resolve();
   });
-}
-
+};
 
 /**
  * Creates list of users with given input array
- * 
  *
- * body array 
+ *
+ * body array
  * no response value expected for this operation
  **/
-exports.createUsersWithArrayInput = function(body) {
-  return new Promise(function(resolve, reject) {
+exports.createUsersWithArrayInput = function (body) {
+  return new Promise(function (resolve, reject) {
     resolve();
   });
-}
-
+};
 
 /**
  * Creates list of users with given input array
- * 
  *
- * body array 
+ *
+ * body array
  * no response value expected for this operation
  **/
-exports.createUsersWithListInput = function(body) {
-  return new Promise(function(resolve, reject) {
+exports.createUsersWithListInput = function (body) {
+  return new Promise(function (resolve, reject) {
     resolve();
   });
-}
-
+};
 
 /**
  * Logs user into the system
- * 
+ *
  *
  * username string The user name for login
  * password string The password for login in clear text
  * returns string
  **/
-exports.loginUser = function(username,password) {
-  return new Promise(function(resolve, reject) {
+exports.loginUser = function (username, password) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
-    examples['application/xml'] = "string";
+    examples['application/xml'] = 'string';
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * Logs out current logged in user session
- * 
+ *
  *
  * no response value expected for this operation
  **/
-exports.logoutUser = function() {
-  return new Promise(function(resolve, reject) {
+exports.logoutUser = function () {
+  return new Promise(function (resolve, reject) {
     resolve();
   });
-}
-
+};
 
 /**
  * Get user by user name
- * 
  *
- * username string The name that needs to be fetched. Use user1 for testing. 
+ *
+ * username string The name that needs to be fetched. Use user1 for testing.
  * returns User
  **/
-exports.getUserByName = function(username) {
-  return new Promise(function(resolve, reject) {
+exports.getUserByName = function (username) {
+  return new Promise(function (resolve, reject) {
     var examples = {};
     examples['application/xml'] = {
-  "id": 0,
-  "username": "string",
-  "firstName": "string",
-  "lastName": "string",
-  "email": "string",
-  "password": "string",
-  "phone": "string",
-  "userStatus": 0
-};
+      id: 0,
+      username: 'string',
+      firstName: 'string',
+      lastName: 'string',
+      email: 'string',
+      password: 'string',
+      phone: 'string',
+      userStatus: 0,
+    };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
       resolve();
     }
   });
-}
-
+};
 
 /**
  * Updated user
@@ -114,12 +107,11 @@ exports.getUserByName = function(username) {
  * user User This can only be done by the logged in user.
  * no response value expected for this operation
  **/
-exports.updateUser = function(username,user) {
-  return new Promise(function(resolve, reject) {
+exports.updateUser = function (username, user) {
+  return new Promise(function (resolve, reject) {
     resolve();
   });
-}
-
+};
 
 /**
  * Delete user
@@ -128,9 +120,8 @@ exports.updateUser = function(username,user) {
  * username string The name that needs to be deleted
  * no response value expected for this operation
  **/
-exports.deleteUser = function(username) {
-  return new Promise(function(resolve, reject) {
+exports.deleteUser = function (username) {
+  return new Promise(function (resolve, reject) {
     resolve();
   });
-}
-
+};

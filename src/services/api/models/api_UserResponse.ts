@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type api_UserResponse = {
-    email?: string;
-    id?: number;
-    name?: string;
+  email?: string;
+  id?: number;
+  name?: string;
 };
-

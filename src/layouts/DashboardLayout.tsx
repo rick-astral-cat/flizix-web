@@ -1,24 +1,24 @@
-import type { ReactNode } from "react";
-import { 
-  LayoutDashboard, 
-  Wallet, 
+import type { ReactNode } from 'react';
+import {
+  LayoutDashboard,
+  Wallet,
   CreditCard,
-  ArrowUpRight, 
-  ArrowDownLeft, 
+  ArrowUpRight,
+  ArrowDownLeft,
   Settings,
   LogOut,
   X,
   Menu,
-  Loader2
-} from "lucide-react";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { cn } from "../utils/cn";
-import { Button } from "../components/ui/Button";
-import { ThemeToggle } from "../components/ThemeToggle";
-import { AuthService } from "../services/api/services/AuthService";
-import { logger } from "../utils/logger";
-import { SidebarGraphAnimation } from "../components/SidebarGraphAnimation";
+  Loader2,
+} from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { cn } from '../utils/cn';
+import { Button } from '../components/ui/Button';
+import { ThemeToggle } from '../components/ThemeToggle';
+import { AuthService } from '../services/api/services/AuthService';
+import { logger } from '../utils/logger';
+import { SidebarGraphAnimation } from '../components/SidebarGraphAnimation';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -41,8 +41,8 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
     };
 
     handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleLogout = async () => {
@@ -51,9 +51,9 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
       await AuthService.postAuthLogout();
       // After successful logout on the backend, redirect to login page.
       // Since the cookie is HttpOnly, the browser will clear it based on the server response.
-      navigate("/", { replace: true });
+      navigate('/', { replace: true });
     } catch (error) {
-      logger.error("Logout failed:", error);
+      logger.error('Logout failed:', error);
     } finally {
       setIsLoggingOut(false);
       setIsAccountDrawerOpen(false);
@@ -61,39 +61,38 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   };
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
-    { icon: Wallet, label: "Accounts", path: "/accounts" },
-    { icon: CreditCard, label: "Cards", path: "/cards" },
-    { icon: ArrowUpRight, label: "Income", path: "/income" },
-    { icon: ArrowDownLeft, label: "Expenses", path: "/expenses" },
-    { icon: Settings, label: "Settings", path: "/settings" },
+    { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
+    { icon: Wallet, label: 'Accounts', path: '/accounts' },
+    { icon: CreditCard, label: 'Cards', path: '/cards' },
+    { icon: ArrowUpRight, label: 'Income', path: '/income' },
+    { icon: ArrowDownLeft, label: 'Expenses', path: '/expenses' },
+    { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
   const currentPath = window.location.pathname;
-  const activeItem = menuItems.find(item => item.path === currentPath) || menuItems[0];
+  const activeItem = menuItems.find((item) => item.path === currentPath) || menuItems[0];
 
   return (
     <div className="flex min-h-screen bg-zinc-50 dark:bg-background transition-colors duration-300">
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/20 dark:bg-black/80 backdrop-blur-[2px] z-40 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       <aside
-          className={cn(
-            "fixed inset-y-0 left-0 z-50 w-64 bg-white/80 backdrop-blur-md dark:bg-white/[0.02] border-r border-zinc-200 dark:border-white/[0.08] transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
-            !isSidebarOpen && "-translate-x-full"
-          )}
+        className={cn(
+          'fixed inset-y-0 left-0 z-50 w-64 bg-white/80 backdrop-blur-md dark:bg-white/[0.02] border-r border-zinc-200 dark:border-white/[0.08] transition-transform duration-300 ease-in-out md:relative md:translate-x-0',
+          !isSidebarOpen && '-translate-x-full'
+        )}
       >
-
         <div className="flex flex-col h-full p-4">
           <div className="relative flex items-center justify-center min-h-[40px] mb-8 px-2">
-            <span 
-              className="font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight cursor-pointer" 
+            <span
+              className="font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight cursor-pointer"
               onClick={() => {
-                navigate("/dashboard");
+                navigate('/dashboard');
                 if (window.innerWidth < 768) {
                   setIsSidebarOpen(false);
                 }
@@ -101,9 +100,9 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
             >
               Flizix
             </span>
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setIsSidebarOpen(false)}
               className="absolute right-2 md:hidden"
             >
@@ -124,10 +123,10 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
                     }
                   }}
                   className={cn(
-                    "flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer text-left",
-                    isActive 
-                      ? "bg-zinc-200/50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100" 
-                       : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/80 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-100"
+                    'flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer text-left',
+                    isActive
+                      ? 'bg-zinc-200/50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
+                      : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/80 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-100'
                   )}
                 >
                   <item.icon size={18} />
@@ -150,9 +149,9 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
                 className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/30 dark:hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
               >
                 <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-600 dark:text-zinc-300 overflow-hidden">
-                  {user.name?.charAt(0) || "U"}
+                  {user.name?.charAt(0) || 'U'}
                 </div>
-                <span className="truncate">{user.name || "User"}</span>
+                <span className="truncate">{user.name || 'User'}</span>
               </button>
             </div>
           </div>
@@ -165,9 +164,9 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
         <header className="h-14 border-b border-zinc-200 dark:border-white/[0.08] flex items-center justify-between px-4 bg-white/80 dark:bg-background/80 backdrop-blur-md sticky top-0 z-40">
           <div className="flex items-center gap-4">
             {!isSidebarOpen && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setIsSidebarOpen(true)}
                 className="text-zinc-500 md:hidden"
               >
@@ -178,14 +177,14 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               {activeItem.label}
             </h2>
           </div>
-          
+
           <div className="flex items-center gap-2">
-            <button 
+            <button
               onClick={() => setIsAccountDrawerOpen(true)}
               className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-zinc-200 dark:hover:ring-zinc-800 transition-all cursor-pointer"
             >
               <span className="text-xs font-medium text-zinc-600 dark:text-zinc-300">
-                {user.name?.charAt(0) || "U"}
+                {user.name?.charAt(0) || 'U'}
               </span>
             </button>
           </div>
@@ -193,17 +192,15 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
 
         {/* Content Area */}
         <div className="flex-1 overflow-auto p-4 md:p-8">
-          <div className="max-w-5xl mx-auto">
-            {children}
-          </div>
+          <div className="max-w-5xl mx-auto">{children}</div>
         </div>
       </main>
 
       {/* Account Drawer */}
       {isAccountDrawerOpen && (
         <>
-          <div 
-            className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-[2px] z-[60]" 
+          <div
+            className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-[2px] z-[60]"
             onClick={() => setIsAccountDrawerOpen(false)}
           />
           <div className="fixed inset-y-0 right-0 w-80 bg-white/80 dark:bg-background/80 backdrop-blur-[2px] shadow-2xl z-[70] border-l border-zinc-200 dark:border-white/[0.08] p-6 flex flex-col transition-transform duration-300 ease-in-out translate-x-0">
@@ -216,10 +213,10 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
 
             <div className="flex flex-col items-center mb-8 text-center">
               <div className="w-20 h-20 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-4 border border-zinc-200 dark:border-zinc-700 text-2xl overflow-hidden">
-                {user.name?.charAt(0) || "U"}
+                {user.name?.charAt(0) || 'U'}
               </div>
               <p className="font-medium text-zinc-900 dark:text-zinc-100">{user.name}</p>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">{user.email || "No email"}</p>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">{user.email || 'No email'}</p>
             </div>
 
             <div className="space-y-6">
@@ -234,13 +231,17 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
               </div>
 
               <div className="pt-6 border-t border-zinc-100 dark:border-zinc-800">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 gap-3"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
                 >
-                  {isLoggingOut ? <Loader2 className="animate-spin" size={18} /> : <LogOut size={18} />}
+                  {isLoggingOut ? (
+                    <Loader2 className="animate-spin" size={18} />
+                  ) : (
+                    <LogOut size={18} />
+                  )}
                   Sign Out
                 </Button>
               </div>

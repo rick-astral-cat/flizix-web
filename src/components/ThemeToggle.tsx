@@ -1,19 +1,19 @@
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "../hooks/use-theme";
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from '../hooks/use-theme';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   // Toggle between light and dark themes
   const toggleTheme = () => {
-    if (theme === "light") {
-      setTheme("dark");
-    } else if (theme === "dark") {
-      setTheme("light");
+    if (theme === 'light') {
+      setTheme('dark');
+    } else if (theme === 'dark') {
+      setTheme('light');
     } else {
       // If "system", determine the next theme based on current preference
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      setTheme(isDark ? "light" : "dark");
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(isDark ? 'light' : 'dark');
     }
   };
 
@@ -24,13 +24,15 @@ export function ThemeToggle() {
       aria-label="Toggle theme"
     >
       {/* Dynamic icon based on current state */}
-      {theme === "light" ? (
+      {theme === 'light' ? (
         <Moon size={20} />
-      ) : theme === "dark" ? (
+      ) : theme === 'dark' ? (
+        <Sun size={20} />
+      ) : // For "system", show the icon of what it WOULD switch to
+      window.matchMedia('(prefers-color-scheme: dark)').matches ? (
         <Sun size={20} />
       ) : (
-        // For "system", show the icon of what it WOULD switch to
-        window.matchMedia("(prefers-color-scheme: dark)").matches ? <Sun size={20} /> : <Moon size={20} />
+        <Moon size={20} />
       )}
     </button>
   );

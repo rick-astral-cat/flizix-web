@@ -3,8 +3,9 @@
 var utils = require('../utils/writer.js');
 var storeApi = require('../impl/storeApiService');
 
-module.exports.getInventory = function getInventory (req, res, next) {
-  storeApi.getInventory()
+module.exports.getInventory = function getInventory(req, res, next) {
+  storeApi
+    .getInventory()
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -13,9 +14,10 @@ module.exports.getInventory = function getInventory (req, res, next) {
     });
 };
 
-module.exports.placeOrder = function placeOrder (req, res, next) {
+module.exports.placeOrder = function placeOrder(req, res, next) {
   var order = req.swagger.params['order'].value;
-  storeApi.placeOrder(order)
+  storeApi
+    .placeOrder(order)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -24,9 +26,10 @@ module.exports.placeOrder = function placeOrder (req, res, next) {
     });
 };
 
-module.exports.getOrderById = function getOrderById (req, res, next) {
+module.exports.getOrderById = function getOrderById(req, res, next) {
   var orderId = req.swagger.params['orderId'].value;
-  storeApi.getOrderById(orderId)
+  storeApi
+    .getOrderById(orderId)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -35,9 +38,10 @@ module.exports.getOrderById = function getOrderById (req, res, next) {
     });
 };
 
-module.exports.deleteOrder = function deleteOrder (req, res, next) {
+module.exports.deleteOrder = function deleteOrder(req, res, next) {
   var orderId = req.swagger.params['orderId'].value;
-  storeApi.deleteOrder(orderId)
+  storeApi
+    .deleteOrder(orderId)
     .then(function (response) {
       utils.writeJson(res, response);
     })
