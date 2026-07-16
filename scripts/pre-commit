@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+echo "=========================================================="
+echo "⚛️ Executing automatic validations in local React project"
+echo "=========================================================="
+
+STAGED_FE_FILES=$(git diff --name-only --cached --diff-filter=d | grep -E '\.(ts|tsx)$' || true)
+
+if [ -z "$STAGED_FE_FILES" ]; then
+    echo "⚡ No modified frontend files detected, omitting linter."
+    exit 0
+fi
+
+echo "🧹 Formatting frontend files (Prettier) ..."
+echo "$STAGED_FE_FILES" | while read -r file; do
+    if [ -n "$file" ]; then
+        npx prettier --write "$file"
+        git add "$file"
+    fi
+done
+
+echo "🔍 Executing ESLint upon modified files..."
+npx eslint --no-warn-ignored $STAGED_FE_FILES
+
+echo "✅ Frontend is clean! Commiting..."
+exit 0

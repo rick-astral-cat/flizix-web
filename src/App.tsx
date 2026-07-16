@@ -1,8 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./pages/auth/LoginPage";
-import DashboardPage from "./pages/dashboard/DashboardPage";
-import AccountsPage from "./pages/accounts/AccountsPage";
-import CardsPage from "./pages/cards/CardsPage";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './pages/auth/LoginPage';
+import DashboardPage from './pages/dashboard/DashboardPage';
+import AccountsPage from './pages/accounts/AccountsPage';
+import CardsPage from './pages/cards/CardsPage';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <Routes>
         {/* Ruta de Login */}
         <Route path="/" element={<LoginPage />} />
-        
+
         {/* Ruta de Dashboard */}
         <Route path="/dashboard" element={<DashboardPage />} />
 

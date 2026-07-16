@@ -1,12 +1,17 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../../hooks/use-auth";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { CardsService, AccountsService, type api_CardResponse, type api_AccountResponse } from "../../services/api";
-import { Card, CardContent } from "../../components/ui/Card";
-import { Button } from "../../components/ui/Button";
-import { Input } from "../../components/ui/Input";
-import { Loader2, CreditCard, Plus, Calendar, X, Landmark, Coins } from "lucide-react";
-import { logger } from "../../utils/logger";
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/use-auth';
+import { DashboardLayout } from '../../layouts/DashboardLayout';
+import {
+  CardsService,
+  AccountsService,
+  type api_CardResponse,
+  type api_AccountResponse,
+} from '../../services/api';
+import { Card, CardContent } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Loader2, CreditCard, Plus, Calendar, X, Landmark, Coins } from 'lucide-react';
+import { logger } from '../../utils/logger';
 
 export default function CardsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -17,11 +22,11 @@ export default function CardsPage() {
 
   // Modal and Form States
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [type, setType] = useState<"credit" | "debit">("debit");
-  const [accountId, setAccountId] = useState<number | "">("");
-  const [creditLimit, setCreditLimit] = useState<string>("");
-  const [cutoffDate, setCutoffDate] = useState<string>("");
+  const [name, setName] = useState('');
+  const [type, setType] = useState<'credit' | 'debit'>('debit');
+  const [accountId, setAccountId] = useState<number | ''>('');
+  const [creditLimit, setCreditLimit] = useState<string>('');
+  const [cutoffDate, setCutoffDate] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -30,32 +35,37 @@ export default function CardsPage() {
       setLoading(true);
       const [cardsData, accountsData] = await Promise.all([
         CardsService.getCards(),
-        AccountsService.getAccounts()
+        AccountsService.getAccounts(),
       ]);
       setCards(cardsData);
       setAccounts(accountsData);
       setError(null);
     } catch (err) {
-      logger.error("Failed to load cards and accounts:", err);
-      setError("Error loading cards. Please try again.");
+      logger.error('Failed to load cards and accounts:', err);
+      setError('Error loading cards. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user) {
-      fetchCardsAndAccounts();
-    }
+    const loadCards = async () => {
+      if (user) {
+        await fetchCardsAndAccounts();
+      }
+    };
+    loadCards().catch((error) => {
+      logger.error('Failed to load cards: ', error);
+    });
   }, [user]);
 
   const handleOpenModal = () => {
-    setName("");
-    setType("debit");
+    setName('');
+    setType('debit');
     // Set default account id to first account if available
-    setAccountId(accounts.length > 0 ? (accounts[0].id || "") : "");
-    setCreditLimit("");
-    setCutoffDate("");
+    setAccountId(accounts.length > 0 ? accounts[0].id || '' : '');
+    setCreditLimit('');
+    setCutoffDate('');
     setSubmitError(null);
     setIsModalOpen(true);
   };
@@ -69,8 +79,8 @@ export default function CardsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-    if (accountId === "") {
-      setSubmitError("Please select a linked bank or cash account.");
+    if (accountId === '') {
+      setSubmitError('Please select a linked bank or cash account.');
       return;
     }
 
@@ -82,16 +92,16 @@ export default function CardsPage() {
         name: name.trim(),
         type: type,
         account_id: Number(accountId),
-        credit_limit: type === "credit" ? Number(creditLimit) : undefined,
-        cutoff_date: type === "credit" ? Number(cutoffDate) : undefined,
+        credit_limit: type === 'credit' ? Number(creditLimit) : undefined,
+        cutoff_date: type === 'credit' ? Number(cutoffDate) : undefined,
       };
 
       await CardsService.postCards(payload);
       setIsModalOpen(false);
       fetchCardsAndAccounts();
     } catch (err) {
-      logger.error("Failed to create card:", err);
-      setSubmitError("Failed to create card. Please check your inputs and try again.");
+      logger.error('Failed to create card:', err);
+      setSubmitError('Failed to create card. Please check your inputs and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -110,7 +120,9 @@ export default function CardsPage() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-background p-4 text-center">
         <h1 className="text-xl font-semibold mb-2">Unauthorized</h1>
         <p className="text-zinc-500 mb-6">You must sign in to view this page.</p>
-        <a href="/" className="text-blue-600 hover:underline text-sm font-medium">Back to Home</a>
+        <a href="/" className="text-blue-600 hover:underline text-sm font-medium">
+          Back to Home
+        </a>
       </div>
     );
   }
@@ -127,7 +139,7 @@ export default function CardsPage() {
               Manage your debit and credit cards here.
             </p>
           </div>
-          <Button 
+          <Button
             onClick={handleOpenModal}
             className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer"
           >
@@ -156,7 +168,11 @@ export default function CardsPage() {
               <p className="text-zinc-500 dark:text-zinc-400 text-sm max-w-sm mb-6">
                 Add a debit or credit card to link with your accounts and track limits and cutoffs.
               </p>
-              <Button onClick={handleOpenModal} variant="outline" className="flex items-center gap-2 cursor-pointer">
+              <Button
+                onClick={handleOpenModal}
+                variant="outline"
+                className="flex items-center gap-2 cursor-pointer"
+              >
                 <Plus size={16} />
                 Add Card
               </Button>
@@ -165,16 +181,16 @@ export default function CardsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {cards.map((card) => {
-              const isCredit = card.type?.toLowerCase() === "credit";
-              const linkedAccount = accounts.find(a => a.id === card.account_id);
-              
+              const isCredit = card.type?.toLowerCase() === 'credit';
+              const linkedAccount = accounts.find((a) => a.id === card.account_id);
+
               return (
-                <div 
-                  key={card.id} 
+                <div
+                  key={card.id}
                   className={`relative overflow-hidden rounded-2xl p-6 h-44 flex flex-col justify-between shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg ${
-                    isCredit 
-                      ? "bg-gradient-to-br from-indigo-900 to-purple-950 text-white dark:from-indigo-950 dark:to-purple-950" 
-                      : "bg-gradient-to-br from-zinc-800 to-zinc-900 text-white dark:from-zinc-900 dark:to-zinc-950 border border-zinc-200 dark:border-white/[0.08]"
+                    isCredit
+                      ? 'bg-gradient-to-br from-indigo-900 to-purple-950 text-white dark:from-indigo-950 dark:to-purple-950'
+                      : 'bg-gradient-to-br from-zinc-800 to-zinc-900 text-white dark:from-zinc-900 dark:to-zinc-950 border border-zinc-200 dark:border-white/[0.08]'
                   }`}
                 >
                   {/* Subtle Background Pattern */}
@@ -187,9 +203,7 @@ export default function CardsPage() {
                       <p className="text-[10px] uppercase font-bold tracking-widest opacity-60">
                         {card.type} Card
                       </p>
-                      <h4 className="font-semibold text-lg tracking-tight mt-0.5">
-                        {card.name}
-                      </h4>
+                      <h4 className="font-semibold text-lg tracking-tight mt-0.5">{card.name}</h4>
                     </div>
                     <CreditCard size={22} className="opacity-80" />
                   </div>
@@ -205,7 +219,7 @@ export default function CardsPage() {
                         </p>
                       </div>
                     )}
-                    
+
                     {isCredit && card.cutoff_date !== undefined && (
                       <div className="flex items-center gap-1.5 text-xs opacity-75">
                         <Calendar size={13} />
@@ -215,7 +229,11 @@ export default function CardsPage() {
 
                     {linkedAccount && (
                       <div className="text-[10px] font-medium opacity-65 flex items-center gap-1.5 mt-2">
-                        {Number(linkedAccount.type) === 1 ? <Landmark size={12} /> : <Coins size={12} />}
+                        {Number(linkedAccount.type) === 1 ? (
+                          <Landmark size={12} />
+                        ) : (
+                          <Coins size={12} />
+                        )}
                         <span>Linked: {linkedAccount.name}</span>
                       </div>
                     )}
@@ -230,8 +248,8 @@ export default function CardsPage() {
       {/* Modal - Create Card */}
       {isModalOpen && (
         <>
-          <div 
-            className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] z-[80] transition-opacity" 
+          <div
+            className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] z-[80] transition-opacity"
             onClick={handleCloseModal}
           />
           <div className="fixed inset-0 flex items-center justify-center p-4 z-[90] pointer-events-none">
@@ -240,9 +258,9 @@ export default function CardsPage() {
                 <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-lg">
                   Add New Card
                 </h3>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={handleCloseModal}
                   disabled={isSubmitting}
                   className="cursor-pointer"
@@ -286,24 +304,24 @@ export default function CardsPage() {
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
-                        onClick={() => setType("debit")}
+                        onClick={() => setType('debit')}
                         disabled={isSubmitting}
                         className={`flex items-center justify-center gap-2 p-2.5 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
-                          type === "debit"
-                            ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold"
-                            : "border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                          type === 'debit'
+                            ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold'
+                            : 'border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
                         }`}
                       >
                         Debit
                       </button>
                       <button
                         type="button"
-                        onClick={() => setType("credit")}
+                        onClick={() => setType('credit')}
                         disabled={isSubmitting}
                         className={`flex items-center justify-center gap-2 p-2.5 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
-                          type === "credit"
-                            ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold"
-                            : "border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                          type === 'credit'
+                            ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold'
+                            : 'border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
                         }`}
                       >
                         Credit
@@ -317,21 +335,25 @@ export default function CardsPage() {
                     </label>
                     <select
                       value={accountId}
-                      onChange={(e) => setAccountId(e.target.value === "" ? "" : Number(e.target.value))}
+                      onChange={(e) =>
+                        setAccountId(e.target.value === '' ? '' : Number(e.target.value))
+                      }
                       disabled={isSubmitting}
                       required
                       className="flex h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/[0.1] dark:bg-zinc-900 dark:text-zinc-100"
                     >
-                      <option value="" disabled>Select an account</option>
+                      <option value="" disabled>
+                        Select an account
+                      </option>
                       {accounts.map((acc) => (
                         <option key={acc.id} value={acc.id}>
-                          {acc.name} ({Number(acc.type) === 1 ? "Checking" : "Cash"})
+                          {acc.name} ({Number(acc.type) === 1 ? 'Checking' : 'Cash'})
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  {type === "credit" && (
+                  {type === 'credit' && (
                     <div className="grid grid-cols-2 gap-3">
                       <Input
                         label="Credit Limit"
@@ -341,7 +363,7 @@ export default function CardsPage() {
                         value={creditLimit}
                         onChange={(e) => setCreditLimit(e.target.value)}
                         disabled={isSubmitting}
-                        required={type === "credit"}
+                        required={type === 'credit'}
                       />
                       <Input
                         label="Cutoff Day (1-31)"
@@ -352,24 +374,24 @@ export default function CardsPage() {
                         value={cutoffDate}
                         onChange={(e) => setCutoffDate(e.target.value)}
                         disabled={isSubmitting}
-                        required={type === "credit"}
+                        required={type === 'credit'}
                       />
                     </div>
                   )}
 
                   <div className="flex gap-3 justify-end pt-2">
-                    <Button 
+                    <Button
                       type="button"
-                      variant="ghost" 
+                      variant="ghost"
                       onClick={handleCloseModal}
                       disabled={isSubmitting}
                       className="cursor-pointer"
                     >
                       Cancel
                     </Button>
-                    <Button 
-                      type="submit" 
-                      disabled={isSubmitting || !name.trim() || accountId === ""}
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting || !name.trim() || accountId === ''}
                       className="flex items-center justify-center gap-2 min-w-[100px] cursor-pointer"
                     >
                       {isSubmitting ? (
@@ -378,7 +400,7 @@ export default function CardsPage() {
                           Saving...
                         </>
                       ) : (
-                        "Save Card"
+                        'Save Card'
                       )}
                     </Button>
                   </div>

@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type api_AccountResponse = {
-    id?: number;
-    name?: string;
-    type?: number;
+  id?: number;
+  name?: string;
+  type?: number;
 };
-

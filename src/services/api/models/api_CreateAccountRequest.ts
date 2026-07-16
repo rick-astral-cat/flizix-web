@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type api_CreateAccountRequest = {
-    name?: string;
-    type?: number;
+  name?: string;
+  type?: number;
 };
-

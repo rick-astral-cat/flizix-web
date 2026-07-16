@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../../hooks/use-auth";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { AccountsService, type api_AccountResponse } from "../../services/api";
-import { Card, CardContent } from "../../components/ui/Card";
-import { Button } from "../../components/ui/Button";
-import { Input } from "../../components/ui/Input";
-import { Loader2, Landmark, Coins, Plus, X, Trash2, AlertTriangle } from "lucide-react";
-import { logger } from "../../utils/logger";
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/use-auth';
+import { DashboardLayout } from '../../layouts/DashboardLayout';
+import { AccountsService, type api_AccountResponse } from '../../services/api';
+import { Card, CardContent } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Loader2, Landmark, Coins, Plus, X, Trash2, AlertTriangle } from 'lucide-react';
+import { logger } from '../../utils/logger';
 
 export default function AccountsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -16,7 +16,7 @@ export default function AccountsPage() {
 
   // Creation Modal States
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [type, setType] = useState<number>(1); // Default to 1 (Checking)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -33,21 +33,26 @@ export default function AccountsPage() {
       setAccounts(data);
       setError(null);
     } catch (err) {
-      logger.error("Failed to load accounts:", err);
-      setError("Error loading accounts. Please try again.");
+      logger.error('Failed to load accounts:', err);
+      setError('Error loading accounts. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user) {
-      fetchAccounts();
-    }
+    const loadAccounts = async () => {
+      if (user) {
+        await fetchAccounts();
+      }
+    };
+    loadAccounts().catch((error) => {
+      logger.error('Failed to load accounts: ', error);
+    });
   }, [user]);
 
   const handleOpenCreateModal = () => {
-    setName("");
+    setName('');
     setType(1);
     setSubmitError(null);
     setIsCreateModalOpen(true);
@@ -73,8 +78,8 @@ export default function AccountsPage() {
       setIsCreateModalOpen(false);
       fetchAccounts();
     } catch (err) {
-      logger.error("Failed to create account:", err);
-      setSubmitError("Failed to create account. Please check your inputs and try again.");
+      logger.error('Failed to create account:', err);
+      setSubmitError('Failed to create account. Please check your inputs and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -101,8 +106,8 @@ export default function AccountsPage() {
       setAccountToDelete(null);
       fetchAccounts();
     } catch (err) {
-      logger.error("Failed to delete account:", err);
-      setDeleteError("Failed to delete account. Please try again.");
+      logger.error('Failed to delete account:', err);
+      setDeleteError('Failed to delete account. Please try again.');
     } finally {
       setIsDeleting(false);
     }
@@ -121,7 +126,9 @@ export default function AccountsPage() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-background p-4 text-center">
         <h1 className="text-xl font-semibold mb-2">Unauthorized</h1>
         <p className="text-zinc-500 mb-6">You must sign in to view this page.</p>
-        <a href="/" className="text-blue-600 hover:underline text-sm font-medium">Back to Home</a>
+        <a href="/" className="text-blue-600 hover:underline text-sm font-medium">
+          Back to Home
+        </a>
       </div>
     );
   }
@@ -138,7 +145,7 @@ export default function AccountsPage() {
               Manage your cash and bank accounts here.
             </p>
           </div>
-          <Button 
+          <Button
             onClick={handleOpenCreateModal}
             className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer"
           >
@@ -163,11 +170,17 @@ export default function AccountsPage() {
               <div className="p-3 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-400 mb-4">
                 <Landmark size={24} />
               </div>
-              <h3 className="font-medium text-zinc-900 dark:text-zinc-100 mb-1">No accounts found</h3>
+              <h3 className="font-medium text-zinc-900 dark:text-zinc-100 mb-1">
+                No accounts found
+              </h3>
               <p className="text-zinc-500 dark:text-zinc-400 text-sm max-w-sm mb-6">
                 Create a bank or cash account to start tracking your balances and transactions.
               </p>
-              <Button onClick={handleOpenCreateModal} variant="outline" className="flex items-center gap-2 cursor-pointer">
+              <Button
+                onClick={handleOpenCreateModal}
+                variant="outline"
+                className="flex items-center gap-2 cursor-pointer"
+              >
                 <Plus size={16} />
                 Create Account
               </Button>
@@ -179,10 +192,13 @@ export default function AccountsPage() {
               const typeId = Number(account.type);
               const isBank = typeId === 1;
               const Icon = isBank ? Landmark : Coins;
-              const typeLabel = typeId === 1 ? "Checking" : typeId === 2 ? "Cash" : "Other";
-              
+              const typeLabel = typeId === 1 ? 'Checking' : typeId === 2 ? 'Cash' : 'Other';
+
               return (
-                <Card key={account.id} className="group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all relative">
+                <Card
+                  key={account.id}
+                  className="group hover:border-zinc-300 dark:hover:border-zinc-700 transition-all relative"
+                >
                   <CardContent className="p-5 flex items-start justify-between gap-4">
                     <div className="flex gap-4">
                       <div className="p-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
@@ -217,8 +233,8 @@ export default function AccountsPage() {
       {/* Modal - Create Account */}
       {isCreateModalOpen && (
         <>
-          <div 
-            className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] z-[80] transition-opacity" 
+          <div
+            className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] z-[80] transition-opacity"
             onClick={handleCloseCreateModal}
           />
           <div className="fixed inset-0 flex items-center justify-center p-4 z-[90] pointer-events-none">
@@ -227,9 +243,9 @@ export default function AccountsPage() {
                 <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-lg">
                   Create New Account
                 </h3>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={handleCloseCreateModal}
                   disabled={isSubmitting}
                   className="cursor-pointer"
@@ -265,8 +281,8 @@ export default function AccountsPage() {
                       disabled={isSubmitting}
                       className={`flex items-center justify-center gap-2 p-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
                         type === 1
-                          ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold"
-                          : "border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                          ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold'
+                          : 'border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
                       }`}
                     >
                       <Landmark size={16} />
@@ -278,8 +294,8 @@ export default function AccountsPage() {
                       disabled={isSubmitting}
                       className={`flex items-center justify-center gap-2 p-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
                         type === 2
-                          ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold"
-                          : "border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                          ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900/5 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-semibold'
+                          : 'border-zinc-200 dark:border-white/[0.08] text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
                       }`}
                     >
                       <Coins size={16} />
@@ -289,17 +305,17 @@ export default function AccountsPage() {
                 </div>
 
                 <div className="flex gap-3 justify-end pt-2">
-                  <Button 
+                  <Button
                     type="button"
-                    variant="ghost" 
+                    variant="ghost"
                     onClick={handleCloseCreateModal}
                     disabled={isSubmitting}
                     className="cursor-pointer"
                   >
                     Cancel
                   </Button>
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     disabled={isSubmitting || !name.trim()}
                     className="flex items-center justify-center gap-2 min-w-[100px] cursor-pointer"
                   >
@@ -309,7 +325,7 @@ export default function AccountsPage() {
                         Saving...
                       </>
                     ) : (
-                      "Create"
+                      'Create'
                     )}
                   </Button>
                 </div>
@@ -322,8 +338,8 @@ export default function AccountsPage() {
       {/* Modal - Confirm Delete */}
       {accountToDelete && (
         <>
-          <div 
-            className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] z-[80] transition-opacity" 
+          <div
+            className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] z-[80] transition-opacity"
             onClick={handleCloseDeleteModal}
           />
           <div className="fixed inset-0 flex items-center justify-center p-4 z-[90] pointer-events-none">
@@ -337,7 +353,8 @@ export default function AccountsPage() {
                     Delete Account
                   </h3>
                   <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-                    Are you sure you want to delete the account <strong>"{accountToDelete.name}"</strong>? This action cannot be undone.
+                    Are you sure you want to delete the account{' '}
+                    <strong>"{accountToDelete.name}"</strong>? This action cannot be undone.
                   </p>
                 </div>
               </div>
@@ -349,15 +366,15 @@ export default function AccountsPage() {
               )}
 
               <div className="flex gap-3 justify-end pt-2">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   onClick={handleCloseDeleteModal}
                   disabled={isDeleting}
                   className="cursor-pointer text-xs"
                 >
                   Cancel
                 </Button>
-                <Button 
+                <Button
                   onClick={handleDelete}
                   disabled={isDeleting}
                   className="bg-red-600 hover:bg-red-700 dark:bg-red-650 dark:hover:bg-red-700 text-white border-none flex items-center justify-center gap-2 min-w-[80px] cursor-pointer text-xs"
@@ -368,7 +385,7 @@ export default function AccountsPage() {
                       Deleting...
                     </>
                   ) : (
-                    "Delete"
+                    'Delete'
                   )}
                 </Button>
               </div>

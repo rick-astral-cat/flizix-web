@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type api_CreateUserRequest = {
-    email?: string;
-    name?: string;
-    passkey_id?: string;
+  email?: string;
+  name?: string;
+  passkey_id?: string;
 };
-

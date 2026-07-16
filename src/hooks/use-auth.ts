@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { UsersService } from "../services/api/services/UsersService";
-import type { api_UserResponse } from "../services/api/models/api_UserResponse";
-import { logger } from "../utils/logger";
+import { useState, useEffect } from 'react';
+import { UsersService } from '../services/api/services/UsersService';
+import type { api_UserResponse } from '../services/api/models/api_UserResponse';
+import { logger } from '../utils/logger';
 
 /**
  * Hook to manage and provide the current user's authentication state.
@@ -13,12 +13,12 @@ export function useAuth() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        logger.info("Starting session verification at /me...");
+        logger.info('Starting session verification at /me...');
         const userData = await UsersService.getMe();
-        logger.info("Session verified. User:", userData);
+        logger.info('Session verified. User:', userData);
         setUser(userData);
       } catch {
-        logger.error("Failed to verify session");
+        logger.error('Failed to verify session');
         setUser(null);
       } finally {
         setLoading(false);

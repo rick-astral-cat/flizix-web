@@ -1,0 +1,36 @@
+name: Frontend CI
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-frontend:
+    name: Validate frontend code and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Verify TypeScript types
+        run: npm run typecheck
+
+      - name: Execute ESLint
+        run: npm run lint
+
+      - name: Test Build Production
+        run: npm run build

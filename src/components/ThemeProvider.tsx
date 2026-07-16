@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ThemeProviderContext, type Theme } from "../context/ThemeContext";
+import { useEffect, useState } from 'react';
+import { ThemeProviderContext, type Theme } from '../context/ThemeContext';
 
 interface ThemeProviderProps {
   children: React.ReactNode;
@@ -9,8 +9,8 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
-  storageKey = "flizix-theme",
+  defaultTheme = 'system',
+  storageKey = 'flizix-theme',
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
@@ -20,13 +20,12 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
-    root.classList.remove("light", "dark");
+    root.classList.remove('light', 'dark');
 
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
 
       root.classList.add(systemTheme);
       return;
